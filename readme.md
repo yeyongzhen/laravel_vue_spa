@@ -1,1 +1,1 @@
-Learning how to create a signle page application by using Laravel and Vue.
+Learning how to create a SPA with Vue.JS 2, Vue-Router, Vuex and Laravel 5.7
