@@ -23,3 +23,9 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 });
+
+Route::group(['middleware' => 'jwt.auth'], function ($router) {
+    Route::get('customers', 'CustomerController@all');
+    Route::get('customers/{id}', 'CustomerController@get');
+    Route::post('customers/new', 'CustomerController@new');
+});
