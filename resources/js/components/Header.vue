@@ -12,10 +12,10 @@
                             <router-link to="/login" class="nav-link">Login</router-link>
                         </li>
                         <li>
-                            <!-- <router-link to="/register" class="nav-link">Register</router-link> -->
+                             <router-link to="/register" class="nav-link">Register</router-link>
                         </li>
                     </template>
-                    <!-- <template v-else>
+                    <template v-else>
                         <li>
                             <router-link to="/customers" class="nav-link">Customers</router-link>
                         </li>
@@ -28,7 +28,7 @@
                                 <a href="#!" @click.prevent="logout" class="dropdown-item">Logout</a>
                             </div>
                         </li>
-                    </template> -->
+                    </template>
                 </ul>
             </div>
         </div>
@@ -39,10 +39,10 @@
     export default {
         name: 'app-header',
         methods: {
-        //     logout() {
-        //         this.$store.commit('logout');
-        //         this.$router.push('/login');
-        //     }
+             logout() {
+                 this.$store.commit('logout');
+                 this.$router.push('/login');
+             }
         },
         computed: {
             currentUser() {
