@@ -2008,6 +2008,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'list',
   mounted: function mounted() {
+    if (this.customers.length) {
+      return;
+    }
+
     this.$store.dispatch('getCustomers');
   },
   computed: {
@@ -2145,11 +2149,7 @@ __webpack_require__.r(__webpack_exports__);
       } // send the customer data to the BE api
 
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/customers/new', this.$data.customer, {
-        headers: {
-          "Authorization": "Bearer ".concat(this.currentUser.token)
-        }
-      }).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/customers/new', this.$data.customer).then(function (response) {
         _this.$router.push('/customers');
       });
     },
@@ -2235,13 +2235,15 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/customers/".concat(this.$route.params.id), {
-      headers: {
-        "Authorization": "Bearer ".concat(this.currentUser.token)
-      }
-    }).then(function (response) {
-      _this.customer = response.data.customer;
-    });
+    if (this.customers.length) {
+      this.customer = this.customers.find(function (customer) {
+        return customer.id == _this.$route.params.id;
+      });
+    } else {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/customers/".concat(this.$route.params.id)).then(function (response) {
+        _this.customer = response.data.customer;
+      });
+    }
   },
   data: function data() {
     return {
@@ -2251,6 +2253,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     currentUser: function currentUser() {
       return this.$store.getters.currentUser;
+    },
+    customers: function customers() {
+      return this.$store.getters.customers;
     }
   }
 });
@@ -55198,6 +55203,7 @@ __webpack_require__.r(__webpack_exports__);
 function login(credentials) {
   return new Promise(function (res, rej) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/auth/login', credentials).then(function (response) {
+      console.log(response);
       res(response.data);
     }).catch(function (err) {
       rej("Wrong email or password");
@@ -55220,12 +55226,13 @@ function getLocalUser() {
 /*!*****************************************!*\
   !*** ./resources/js/helpers/general.js ***!
   \*****************************************/
-/*! exports provided: initialize */
+/*! exports provided: initialize, setAuthorization */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initialize", function() { return initialize; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setAuthorization", function() { return setAuthorization; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -55252,6 +55259,13 @@ function initialize(store, router) {
 
     return Promise.reject(error);
   });
+
+  if (store.getters.currentUser) {
+    setAuthorization(store.getters.currentUser.token);
+  }
+}
+function setAuthorization(token) {
+  axios.defaults.headers.common["Authorization"] = "Bearer ".concat(token);
 }
 
 /***/ }),
@@ -55379,11 +55393,7 @@ var user = Object(_helpers_auth__WEBPACK_IMPORTED_MODULE_0__["getLocalUser"])();
       context.commit("login");
     },
     getCustomers: function getCustomers(context) {
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/customers', {
-        headers: {
-          "Authorization": "Bearer ".concat(context.state.currentUser.token)
-        }
-      }).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/customers').then(function (response) {
         context.commit('updateCustomers', response.data.customers);
       });
     }

@@ -4,6 +4,7 @@ export function login(credentials) {
     return new Promise((res,rej) => {
         Axios.post('/api/auth/login', credentials)
             .then((response) => {
+                console.log(response);
                 res(response.data)
             })
             .catch((err) => {

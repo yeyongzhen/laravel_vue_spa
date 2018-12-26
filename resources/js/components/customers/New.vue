@@ -84,11 +84,7 @@
                 }
 
                 // send the customer data to the BE api
-                Axios.post('/api/customers/new', this.$data.customer, {
-                    headers: {
-                        "Authorization": `Bearer ${this.currentUser.token}`
-                    }
-                })
+                Axios.post('/api/customers/new', this.$data.customer)
                 .then((response) => {
                     this.$router.push('/customers');
                 });
